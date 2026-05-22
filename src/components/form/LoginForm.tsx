@@ -1,13 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
-import { loginSchema } from "./validations/loginSchema"
+import { loginSchema, type loginSchemaType } from "./validations/loginSchema"
 import TextField from "./fields/TextField"
 import PasswordField from "./fields/PasswordField"
 import { BsAt } from "react-icons/bs"
 import RedButton from "../RedButton"
 
 type LoginFormType = {
-    onSubmit: () => void
+    onSubmit: (data:loginSchemaType) => void
 }
 
 const LoginForm = ({ onSubmit }: LoginFormType) => {

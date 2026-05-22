@@ -1,9 +1,11 @@
 import { Link, useOutletContext } from "react-router-dom"
 import LoginForm from "../components/form/LoginForm"
 import type { outletAuthContext } from "../types/outletAuthContext"
+import { useLoginAuthMutation } from "../api/authApi"
 
 const LoginPage = () => {
     const { setToastErr } = useOutletContext<outletAuthContext>()
+    const  [loginAuth, {data, error, isError}] = useLoginAuthMutation()
 
     const onSubmitForm = () => {
         setToastErr({

@@ -3,6 +3,7 @@ import metaEnv from "../env";
 import type { ApiResponseData } from "../types/apiResponseData";
 import type { loginSchemaType } from "../components/form/validations/loginSchema";
 import type { registerSchemaType } from "../components/form/validations/registerSchema";
+import { authAction } from "../stores/authState";
 
 const authApi = createApi({
     reducerPath: 'authApi',
@@ -14,8 +15,13 @@ const authApi = createApi({
                 body: credential,
                 method: "POST"
             }),
-            onQueryStarted: async (arg, { queryFulfilled }) => {
+            onQueryStarted: async (arg, {dispatch, queryFulfilled }) => {
                 try {
+                    const {data} = await queryFulfilled
+
+                    const serverToken = data.data.token
+
+                    dispatch(authAction.login(serverToken))
 
                 } catch (error: any) {
                     const errorData = error.error;
