@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import authImg from "../../assets/images/illustrasi_login.png"
 import logoImg from "../../assets/images/logo.png"
-import ToastAuth from "../../components/AuthToast";
+import Toast from "../../components/AuthToast";
 import { useState } from "react";
 
 const AuthLayout = () => {
@@ -31,7 +31,7 @@ const AuthLayout = () => {
                 </div>
             </div>
             {toastErr && (
-                <ToastAuth
+                <Toast
                     type={toastErr.type}
                     message={toastErr.message}
                     onClose={() => setToastErr(null)}

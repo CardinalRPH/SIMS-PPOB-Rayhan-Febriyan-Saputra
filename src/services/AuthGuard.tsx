@@ -1,20 +1,23 @@
-import { useEffect, type ReactNode } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "../stores";
-import { useNavigate } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-const AuthGuard = ({ children }: { children: ReactNode }) => {
+
+export const ProtectedRoute = () => {
+    const location = useLocation();
     const { isAuthenticated, token } = useSelector((state: RootState) => state.auth)
 
-    const navigate = useNavigate()
+    if (!isAuthenticated || !token) {
+        return <Navigate to="/login" state={{ from: location }} replace />;
+    }
 
-    useEffect(() => {
-        if (!isAuthenticated || !token) {
-            navigate("/login")
-        }
-    }, [isAuthenticated, token])
-
-    return (isAuthenticated && token) && children
+    return <Outlet />
 }
 
-export default AuthGuard
+export const PublicRoute = () => {
+    const { isAuthenticated, token } = useSelector((state: RootState) => state.auth)
+    if (isAuthenticated && token) {
+        return <Navigate to="/" replace />;
+    }
+    return <Outlet />
+}

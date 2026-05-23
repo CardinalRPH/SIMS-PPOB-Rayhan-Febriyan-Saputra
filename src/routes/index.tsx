@@ -1,32 +1,71 @@
 import { createBrowserRouter } from "react-router-dom";
 import AuthLayout from "../pages/layouts/AuthLayout";
-import LoginPage from "../pages/Login";
-import RegisterPage from "../pages/Register";
 import HomeLayout from "../pages/layouts/HomeLayout";
-import HomePage from "../pages/Home";
+import { lazy } from "react";
+import { ProtectedRoute, PublicRoute } from "../services/AuthGuard";
+
+
+const LoginPage = lazy(() => import("../pages/Login"))
+const RegisterPage = lazy(() => import("../pages/Register"))
+const HomePage = lazy(() => import("../pages/Home"))
+const TopUpPage = lazy(() => import("../pages/TopUp"))
+const ServicesPage = lazy(() => import("../pages/Services"))
+const TransactionPage = lazy(() => import("../pages/Transaction"))
+const AccountPage = lazy(() => import("../pages/AccountPage"))
+const NotFoundPage = lazy(() => import("../pages/NotFoundPage"))
 
 const AppRouter = createBrowserRouter([
     {
-        element: <AuthLayout />,
+        element: <PublicRoute />,
         children: [
             {
-                path: "/login",
-                element: <LoginPage />
-            },
-            {
-                path: "/register",
-                element: <RegisterPage />
+                element: <AuthLayout />,
+                children: [
+                    {
+                        path: "/login",
+                        element: <LoginPage />
+                    },
+                    {
+                        path: "/register",
+                        element: <RegisterPage />
+                    }
+                ]
             }
         ]
     },
     {
-        element: <HomeLayout />,
+        element: <ProtectedRoute />,
         children: [
             {
-                path: "/",
-                element: <HomePage />
+                element: <HomeLayout />,
+                children: [
+                    {
+                        path: "/",
+                        element: <HomePage />
+                    },
+                    {
+                        path: "/top-up",
+                        element: <TopUpPage />
+                    },
+                    {
+                        path: "/services/:serviceId",
+                        element: <ServicesPage />
+                    },
+                    {
+                        path: "/transaction",
+                        element: <TransactionPage />
+                    },
+                    {
+                        path: "/account",
+                        element: <AccountPage />
+                    }
+                ]
             }
         ]
+    },
+    {
+        path: "*",
+        element: <NotFoundPage />
     }
 ])
 

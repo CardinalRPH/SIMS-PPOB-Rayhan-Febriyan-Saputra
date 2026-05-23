@@ -8,10 +8,11 @@ import RedButton from "../RedButton"
 
 type RegisterFormType = {
     onSubmit: (data: registerSchemaType) => void
+    disabled: boolean
 }
 
 
-const RegisterForm = ({ onSubmit }: RegisterFormType) => {
+const RegisterForm = ({ onSubmit, disabled }: RegisterFormType) => {
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: zodResolver(registerSchema)
     })
@@ -44,11 +45,11 @@ const RegisterForm = ({ onSubmit }: RegisterFormType) => {
                 />
                 <PasswordField
                     placeholder="konfirmasi password"
-                    {...register('password', { required: true })}
-                    error={errors.password}
+                    {...register('confirmPass', { required: true })}
+                    error={errors.confirmPass}
                 />
             </div>
-            <RedButton type="submit">Registrasi</RedButton>
+            <RedButton disabled={disabled} type="submit">Registrasi</RedButton>
         </form>
     )
 }

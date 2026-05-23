@@ -5,7 +5,7 @@ import type { RootState } from "../stores";
 import type { ProfileGetResponseType } from "../dto/membership.dto";
 import type { updateProfileSchemaType } from "../components/form/validations/profileSchema";
 
-const profileApi = createApi({
+export const profileApi = createApi({
   reducerPath: "profileApi",
   baseQuery: fetchBaseQuery({
     baseUrl: metaEnv.VITE_API_URL,
@@ -21,7 +21,7 @@ const profileApi = createApi({
   }),
   tagTypes: ["Profile"],
   endpoints: (build) => ({
-    getProfile: build.query<ApiResponseData<ProfileGetResponseType>, any>({
+    getProfile: build.query<ApiResponseData<ProfileGetResponseType>, void>({
       query: () => "/profile",
       providesTags: ["Profile"],
     }),
@@ -37,7 +37,7 @@ const profileApi = createApi({
       }),
       invalidatesTags: ["Profile"],
     }),
-    updateProfileImage: build.mutation<any, FormData>({
+    updateProfileImage: build.mutation<ApiResponseData<ProfileGetResponseType>, FormData>({
       query: (formData) => ({
         url: "/profile/image",
         body: formData,

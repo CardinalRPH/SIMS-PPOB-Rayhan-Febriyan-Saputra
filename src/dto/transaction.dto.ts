@@ -1,6 +1,8 @@
-export type BalanceResponseType = number;
+export type BalanceResponseType = {
+  balance: number
+};
 
-export type TransactionResponseType = {
+export type RecordType = {
   invoice_number: string;
   service_code: string;
   service_name: string;
@@ -8,3 +10,9 @@ export type TransactionResponseType = {
   total_amount: number;
   created_on: string;
 };
+
+export type TransactionResponseType = {
+  offset: number
+  limit: number
+  records: RecordType[]
+}

@@ -40,6 +40,7 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         login(state, action: PayloadAction<string>) {
+            console.log("dddd")
             state.isAuthenticated = true;
             state.token = action.payload;
             saveAuthLocalStorage(true, state.token);

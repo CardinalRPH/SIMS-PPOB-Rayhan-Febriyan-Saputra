@@ -5,7 +5,7 @@ import type { loginSchemaType } from "../components/form/validations/loginSchema
 import type { registerSchemaType } from "../components/form/validations/registerSchema";
 import { authAction } from "../stores/authState";
 
-const authApi = createApi({
+export const authApi = createApi({
     reducerPath: 'authApi',
     baseQuery: fetchBaseQuery({ baseUrl: metaEnv.VITE_API_URL }),
     endpoints: (build) => ({
@@ -15,18 +15,19 @@ const authApi = createApi({
                 body: credential,
                 method: "POST"
             }),
-            onQueryStarted: async (arg, {dispatch, queryFulfilled }) => {
+            onQueryStarted: async (_arg, { dispatch, queryFulfilled }) => {
                 try {
-                    const {data} = await queryFulfilled
+                    const { data } = await queryFulfilled
 
                     const serverToken = data.data.token
-
                     dispatch(authAction.login(serverToken))
 
                 } catch (error: any) {
                     const errorData = error.error;
-
                     const serverMessage = errorData?.data?.message || "Something went wrong";
+                    if (errorData?.data?.status === 108) {
+                        dispatch(authAction.logout())
+                    }
                     console.error(serverMessage);
                 }
             }

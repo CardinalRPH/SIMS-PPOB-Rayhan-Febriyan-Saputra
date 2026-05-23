@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { BsList, BsXLg } from 'react-icons/bs';
-import { Outlet } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
+import logo from "../../assets/images/logo.png"
 
 
 const navigationLinks = [
     { label: 'Top Up', href: '/top-up' },
     { label: 'Transaction', href: '/transaction' },
-    { label: 'Akun', href: '/akun' },
+    { label: 'Akun', href: '/account' },
 ];
 
 export const HomeLayout = () => {
@@ -21,20 +22,32 @@ export const HomeLayout = () => {
                 >
                     <BsList />
                 </button>
-                <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 bg-[#f02c1c] rounded-sm flex items-center justify-center text-white font-bold text-[10px]">🎯</div>
+                <Link to="/" className="flex items-center gap-2">
+                    <div className="w-6 h-6 bg-[#f02c1c] rounded-full flex items-center justify-center p-1 overflow-hidden shrink-0">
+                        <img
+                            src={logo}
+                            alt="Logo SIMS PPOB"
+                            className="w-full h-full object-contain"
+                        />
+                    </div>
                     <span className="font-bold text-gray-800 tracking-wide text-sm">SIMS PPOB</span>
-                </div>
+                </Link>
             </header>
             {/* mobile menu */}
             <div className={`fixed inset-0 z-50 md:hidden transition-opacity duration-300 ${isMobileSidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
                 <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsMobileSidebarOpen(false)} />
                 <div className={`absolute top-0 left-0 w-64 h-full bg-white shadow-xl p-5 flex flex-col transform transition-transform duration-300 ease-in-out ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                     <div className="flex justify-between items-center pb-4 border-b border-gray-100">
-                        <div className="flex items-center gap-2">
-                            <div className="w-5 h-5 bg-[#f02c1c] rounded-sm flex items-center justify-center text-white font-bold text-[10px]">🎯</div>
+                        <Link to="/" className="flex items-center gap-2">
+                            <div className="w-6 h-6 bg-[#f02c1c] rounded-full flex items-center justify-center p-1 overflow-hidden shrink-0">
+                                <img
+                                    src={logo}
+                                    alt="Logo SIMS PPOB"
+                                    className="w-full h-full object-contain"
+                                />
+                            </div>
                             <span className="font-bold text-gray-800 text-sm">SIMS PPOB</span>
-                        </div>
+                        </Link>
                         <button onClick={() => setIsMobileSidebarOpen(false)} className="text-gray-500 text-lg p-1">
                             <BsXLg />
                         </button>
@@ -58,10 +71,16 @@ export const HomeLayout = () => {
             <nav className="hidden md:block w-full bg-white border-b border-gray-100 sticky top-0 z-40">
                 <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
                     {/* Logo Desktop */}
-                    <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 bg-[#f02c1c] rounded-sm flex items-center justify-center text-white font-bold text-xs">🎯</div>
+                    <Link to="/" className="flex items-center gap-2">
+                        <div className="w-6 h-6 bg-[#f02c1c] rounded-full flex items-center justify-center p-1 overflow-hidden shrink-0">
+                            <img
+                                src={logo}
+                                alt="Logo SIMS PPOB"
+                                className="w-full h-full object-contain"
+                            />
+                        </div>
                         <span className="font-bold text-gray-800 tracking-wide">SIMS PPOB</span>
-                    </div>
+                    </Link>
 
                     <div className="flex items-center gap-10">
                         {navigationLinks.map((link) => (

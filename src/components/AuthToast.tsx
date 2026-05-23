@@ -1,4 +1,3 @@
-// src/components/ui/Toast.tsx
 import { useEffect } from 'react';
 import { BsCheckCircleFill, BsX, BsXCircleFill } from 'react-icons/bs';
 
@@ -9,7 +8,7 @@ type ToastType = {
     type: 'success' | 'error';
 }
 
-const ToastAuth = ({ message, onClose, duration = 4000, type }: ToastType) => {
+const Toast = ({ message, onClose, duration = 4000, type }: ToastType) => {
     useEffect(() => {
         const timer = setTimeout(() => {
             onClose();
@@ -52,4 +51,4 @@ const ToastAuth = ({ message, onClose, duration = 4000, type }: ToastType) => {
     );
 };
 
-export default ToastAuth
+export default Toast

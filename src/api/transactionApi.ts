@@ -2,10 +2,9 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import metaEnv from "../env";
 import type { ApiResponseData } from "../types/apiResponseData";
 import type { RootState } from "../stores";
-import type { ProfileGetResponseType } from "../dto/membership.dto";
-import type { updateProfileSchemaType } from "../components/form/validations/profileSchema";
 import type {
   BalanceResponseType,
+  RecordType,
   TransactionResponseType,
 } from "../dto/transaction.dto";
 import type {
@@ -13,7 +12,7 @@ import type {
   transactionSchemaType,
 } from "../components/form/validations/transactionSchema";
 
-const transactionApi = createApi({
+export const transactionApi = createApi({
   reducerPath: "transactionApi",
   baseQuery: fetchBaseQuery({
     baseUrl: metaEnv.VITE_API_URL,
@@ -29,13 +28,13 @@ const transactionApi = createApi({
   }),
   tagTypes: ["balance", "history"],
   endpoints: (build) => ({
-    getBalance: build.query<ApiResponseData<BalanceResponseType>, any>({
+    getBalance: build.query<ApiResponseData<BalanceResponseType>, void>({
       query: () => "/balance",
       providesTags: ["balance"],
     }),
 
     getHistory: build.query<
-      ApiResponseData<BalanceResponseType>,
+      ApiResponseData<TransactionResponseType>,
       { offset: number; limit: number }
     >({
       query: ({ limit, offset }) =>
@@ -56,7 +55,7 @@ const transactionApi = createApi({
     }),
 
     postCTransaction: build.mutation<
-      ApiResponseData<TransactionResponseType>,
+      ApiResponseData<RecordType>,
       transactionSchemaType
     >({
       query: (transactionValue) => ({

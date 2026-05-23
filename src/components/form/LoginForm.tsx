@@ -7,10 +7,11 @@ import { BsAt } from "react-icons/bs"
 import RedButton from "../RedButton"
 
 type LoginFormType = {
-    onSubmit: (data:loginSchemaType) => void
+    onSubmit: (data: loginSchemaType) => void
+    disabled: boolean
 }
 
-const LoginForm = ({ onSubmit }: LoginFormType) => {
+const LoginForm = ({ onSubmit, disabled }: LoginFormType) => {
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: zodResolver(loginSchema)
     })
@@ -23,14 +24,16 @@ const LoginForm = ({ onSubmit }: LoginFormType) => {
                     placeholder="masukan email anda"
                     {...register('email')}
                     error={errors.email}
+                    disabled={disabled}
                 />
                 <PasswordField
                     placeholder="masukan password anda"
                     {...register('password', { required: true })}
                     error={errors.password}
+                    disabled={disabled}
                 />
             </div>
-            <RedButton type="submit">Masuk</RedButton>
+            <RedButton type="submit" disabled={disabled}>Masuk</RedButton>
         </form>
     )
 
