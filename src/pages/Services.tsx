@@ -12,6 +12,9 @@ import ConfirmationModal from "../components/ConfirmationModal"
 import StatusModal from "../components/StatusModal"
 import MiniProfileSkeleton from "../components/skeleton/MiniProfileSkeleton"
 import ProfileSection from "../components/ProfileSection"
+import getServerErrorWithStatus from "../utils/errorCast"
+import { useDispatch } from "react-redux"
+import { authAction } from "../stores/authState"
 
 const ServicesPage = () => {
     const { serviceId } = useParams<{ serviceId: string }>();
@@ -25,6 +28,7 @@ const ServicesPage = () => {
     const { data: profileData, isLoading: profileLoading, isError: profileIsErr, error: profileErr } = useGetProfileQuery()
     const { data: servicesData, isLoading: serviceLoading, isError: isServErr, error: servErr } = useGetServiceQuery()
     const [postTransaction, { isLoading: ctLoading }] = usePostCTransactionMutation()
+    const dispatch = useDispatch()
 
     const navigate = useNavigate()
     const currentService = useMemo(() => {
@@ -50,39 +54,71 @@ const ServicesPage = () => {
                 setStatusModal(true)
 
             }
-        } catch (error: any) {
-            console.error(error)
-            const serverMessage = error?.data?.message || "Terjadi suatu kesalahan";
-            setConfirmModal(false)
+        } catch (error: unknown) {
+            const serverError = getServerErrorWithStatus(error);
+            const serverMessage = serverError?.message || "Terjadi suatu kesalahan";
+            setConfirmModal(false);
+
+            if (serverError?.status === 108) {
+                setStatusModalData({
+                    message: serverMessage,
+                    title: `Pembayaran ${currentService!.service_name} sebesar`,
+                    type: "error"
+                });
+                setStatusModal(true);
+
+                setTimeout(() => {
+                    dispatch(authAction.logout());
+                }, 2000);
+
+                return;
+            }
+
             setStatusModalData({
                 message: serverMessage,
                 title: `Pembayaran ${currentService!.service_name} sebesar`,
                 type: "error"
-            })
-            setStatusModal(true)
+            });
+            setStatusModal(true);
         }
     }
 
     useEffect(() => {
+        const profileServerError = getServerErrorWithStatus(profileErr);
+        const balanceServerError = getServerErrorWithStatus(balanceErr);
+        const servServerError = getServerErrorWithStatus(servErr);
+
+        if (profileServerError?.status === 108 || balanceServerError?.status === 108) {
+            setToast({
+                message: profileServerError?.message || balanceServerError?.message || "Sesi Anda telah berakhir.",
+                type: "error",
+            });
+
+            setTimeout(() => {
+                dispatch(authAction.logout());
+            }, 2000);
+
+            return;
+        }
+
         if (profileIsErr) {
             setToast({
-                message: (profileErr as any)?.data?.message || "Gagal memuat data profil pengguna.",
+                message: profileServerError?.message || "Gagal memuat data profil pengguna.",
                 type: "error",
             });
-        }
-        if (balanceIsErr) {
+        } else if (balanceIsErr) {
             setToast({
-                message: (balanceErr as any)?.data?.message || "Gagal memuat saldo akun Anda.",
+                message: balanceServerError?.message || "Gagal memuat saldo akun Anda.",
                 type: "error",
             });
-        }
-        if (isServErr) {
+        } else if (isServErr) {
             setToast({
-                message: (servErr as any)?.data?.message || "Gagal memuat services.",
+                message: servServerError?.message || "Gagal memuat services.",
                 type: "error",
             });
         }
-    }, [isServErr, profileIsErr, balanceIsErr]);
+
+    }, [isServErr, profileIsErr, balanceIsErr, profileErr, balanceErr, servErr, dispatch]);
 
     useEffect(() => {
         document.title = `${currentService?.service_name} | SIMS PPOB-Rayhan Febriyan Saputra`;

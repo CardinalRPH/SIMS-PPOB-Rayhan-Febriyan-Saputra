@@ -10,6 +10,9 @@ import ConfirmationModal from "../components/ConfirmationModal"
 import StatusModal from "../components/StatusModal"
 import MiniProfileSkeleton from "../components/skeleton/MiniProfileSkeleton"
 import ProfileSection from "../components/ProfileSection"
+import getServerErrorWithStatus from "../utils/errorCast"
+import { useDispatch } from "react-redux"
+import { authAction } from "../stores/authState"
 
 const TopUpPage = () => {
     const { data: balanceData, isError: balanceIsErr, error: balanceErr } = useGetBalanceQuery()
@@ -23,6 +26,7 @@ const TopUpPage = () => {
     const [statusModal, setStatusModal] = useState(false)
     const [statusModalData, setStatusModalData] = useState<{ type: "success" | "error", title: string, message: string } | null>(null)
     const [amountVal, setAmountVal] = useState(0)
+    const dispatch = useDispatch()
 
 
     const handleSubmit = (data: topUpSchemaType) => {
@@ -50,16 +54,33 @@ const TopUpPage = () => {
                 setStatusModal(true)
             }
 
-        } catch (error: any) {
-            console.error(error)
-            const serverMessage = error?.data?.message || "Terjadi suatu kesalahan";
-            setConfirmModal(false)
+        } catch (error: unknown) {
+            const serverError = getServerErrorWithStatus(error);
+            const serverMessage = serverError?.message || "Terjadi suatu kesalahan";
+
+            setConfirmModal(false);
+
+            if (serverError?.status === 108) {
+                setStatusModalData({
+                    message: serverMessage,
+                    title: "Top Up sebesar",
+                    type: "error"
+                });
+                setStatusModal(true);
+
+                setTimeout(() => {
+                    dispatch(authAction.logout());
+                }, 2000);
+
+                return;
+            }
+
             setStatusModalData({
                 message: serverMessage,
-                title: `Top Up sebesar`,
+                title: "Top Up sebesar",
                 type: "error"
-            })
-            setStatusModal(true)
+            });
+            setStatusModal(true);
         }
 
     }
@@ -69,19 +90,35 @@ const TopUpPage = () => {
     }
 
     useEffect(() => {
+        const profileServerError = getServerErrorWithStatus(profileErr);
+        const balanceServerError = getServerErrorWithStatus(balanceErr);
+
+        if (profileServerError?.status === 108 || balanceServerError?.status === 108) {
+            setToast({
+                message: profileServerError?.message || balanceServerError?.message || "Sesi Anda telah berakhir.",
+                type: "error",
+            });
+
+            setTimeout(() => {
+                dispatch(authAction.logout());
+            }, 2000);
+
+            return;
+        }
+
         if (profileIsErr) {
             setToast({
-                message: (profileErr as any)?.data?.message || "Gagal memuat data profil pengguna.",
+                message: profileServerError?.message || "Gagal memuat data profil pengguna.",
                 type: "error",
             });
-        }
-        if (balanceIsErr) {
+        } else if (balanceIsErr) {
             setToast({
-                message: (balanceErr as any)?.data?.message || "Gagal memuat saldo akun Anda.",
+                message: balanceServerError?.message || "Gagal memuat saldo akun Anda.",
                 type: "error",
             });
         }
-    }, [profileIsErr, balanceIsErr]);
+
+    }, [profileIsErr, balanceIsErr, profileErr, balanceErr, dispatch]);
 
     useEffect(() => {
         document.title = "Top Up | SIMS PPOB-Rayhan Febriyan Saputra";

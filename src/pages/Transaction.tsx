@@ -7,6 +7,9 @@ import Toast from "../components/AuthToast";
 import TransactionList from "../components/TransactionList";
 import MiniProfileSkeleton from "../components/skeleton/MiniProfileSkeleton";
 import ProfileSection from "../components/ProfileSection";
+import { useDispatch } from "react-redux";
+import { authAction } from "../stores/authState";
+import getServerErrorWithStatus from "../utils/errorCast";
 
 
 
@@ -16,6 +19,7 @@ const TransactionPage = () => {
     const [offset, setOffset] = useState<number>(0);
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+    const dispatch = useDispatch()
 
     const { data: historyData, isLoading, isFetching, isError: historyIsError, error: historyErr } = useGetHistoryQuery({ limit: LIMIT, offset })
     const { data: balanceData, isError: balanceIsErr, error: balanceErr } = useGetBalanceQuery()
@@ -38,24 +42,46 @@ const TransactionPage = () => {
     }, [historyData]);
 
     useEffect(() => {
-        if (historyErr && historyIsError) {
+        const historyServerError = getServerErrorWithStatus(historyErr);
+        const profileServerError = getServerErrorWithStatus(profileErr);
+        const balanceServerError = getServerErrorWithStatus(balanceErr);
+
+        if (
+            historyServerError?.status === 108 ||
+            profileServerError?.status === 108 ||
+            balanceServerError?.status === 108
+        ) {
             setToast({
-                message: (historyErr as any)?.data?.message || "Gagal memuat riwayat transaksi.",
+                message: historyServerError?.message || profileServerError?.message || balanceServerError?.message || "Sesi Anda telah berakhir.",
                 type: "error",
             });
+
+            setTimeout(() => {
+                console.log("Status 108 terdeteksi dari Query riwayat/profil/saldo, mengeksekusi logout...");
+                dispatch(authAction.logout());
+            }, 2000);
+
+            return;
         }
-        if (profileIsErr && profileErr) {
+
+        if (historyIsError && historyErr) {
             setToast({
-                message: (profileErr as any)?.data?.message || "Gagal memuat data profil pengguna.",
+                message: historyServerError?.message || "Gagal memuat riwayat transaksi.",
+                type: "error",
+            });
+        } else if (profileIsErr && profileErr) {
+            setToast({
+                message: profileServerError?.message || "Gagal memuat data profil pengguna.",
                 type: "error",
             });
         } else if (balanceIsErr && balanceErr) {
             setToast({
-                message: (balanceErr as any)?.data?.message || "Gagal memuat saldo akun Anda.",
+                message: balanceServerError?.message || "Gagal memuat saldo akun Anda.",
                 type: "error",
             });
         }
-    }, [historyErr, historyIsError, profileIsErr, profileErr, balanceIsErr, balanceErr]);
+
+    }, [historyErr, historyIsError, profileIsErr, profileErr, balanceIsErr, balanceErr, dispatch]);
 
     const handleShowMore = () => {
         if (!isFetching && hasMore) {

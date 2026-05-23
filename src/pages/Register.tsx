@@ -12,7 +12,7 @@ const RegisterPage = () => {
     const onSubmitForm = async (data: registerSchemaType) => {
         try {
             const resData = await createAuth(data).unwrap()
-            if (resData.data) {
+            if (resData) {
                 setToastErr({
                     message: resData.message,
                     type: "success"

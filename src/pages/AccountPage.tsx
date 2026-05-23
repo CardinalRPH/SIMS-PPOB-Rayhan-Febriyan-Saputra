@@ -8,6 +8,7 @@ import AccountFormSkeleton from "../components/skeleton/AccountFormSkeleton";
 import { useDispatch } from "react-redux";
 import { authAction } from "../stores/authState";
 import profileDummy from "../assets/images/profilePhoto.png"
+import getServerErrorWithStatus from "../utils/errorCast";
 
 const AccountPage = () => {
     const [isEditMode, setIsEditMode] = useState<boolean>(false);
@@ -27,9 +28,24 @@ const AccountPage = () => {
 
             setToast({ message: responseData.message, type: "success" });
             setIsEditMode(false);
-        } catch (err: any) {
+        } catch (err: unknown) {
+            const serverError = getServerErrorWithStatus(err);
+
+            const errorMessage = serverError?.message || "Gagal memperbarui profil.";
+            if (serverError?.status === 108) {
+                setToast({
+                    message: errorMessage,
+                    type: "error",
+                });
+
+                setTimeout(() => {
+                    dispatch(authAction.logout());
+                }, 2000);
+
+                return;
+            }
             setToast({
-                message: err?.data?.message || "Gagal memperbarui profil.",
+                message: errorMessage,
                 type: "error",
             });
         }
@@ -51,10 +67,25 @@ const AccountPage = () => {
             const responseData = await updateAvatar(formData).unwrap();
             setToast({ message: responseData.message, type: "success" });
         } catch (err: any) {
+            const serverError = getServerErrorWithStatus(err);
+            const errorMessage = serverError?.message || "Gagal memperbarui foto profil.";
+            if (serverError?.status === 108) {
+                setToast({
+                    message: errorMessage,
+                    type: "error",
+                });
+
+                setTimeout(() => {
+                    dispatch(authAction.logout());
+                }, 2000);
+
+                return;
+            }
             setToast({
-                message: err?.data?.message || "Gagal memperbarui foto profil.",
+                message: errorMessage,
                 type: "error",
             });
+
         }
     };
 

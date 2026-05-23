@@ -25,9 +25,6 @@ export const authApi = createApi({
                 } catch (error: any) {
                     const errorData = error.error;
                     const serverMessage = errorData?.data?.message || "Something went wrong";
-                    if (errorData?.data?.status === 108) {
-                        dispatch(authAction.logout())
-                    }
                     console.error(serverMessage);
                 }
             }

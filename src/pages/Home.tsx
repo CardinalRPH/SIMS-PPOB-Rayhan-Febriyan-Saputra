@@ -10,6 +10,9 @@ import ServiceCardSkeleton from "../components/skeleton/ServiceCardSkeleton"
 import CarouselCardSkeleton from "../components/skeleton/CarouselCardSkeleton"
 import MiniProfileSkeleton from "../components/skeleton/MiniProfileSkeleton"
 import ProfileSection from "../components/ProfileSection"
+import getServerErrorWithStatus from "../utils/errorCast"
+import { useDispatch } from "react-redux"
+import { authAction } from "../stores/authState"
 
 
 const HomePage = () => {
@@ -17,35 +20,46 @@ const HomePage = () => {
     const { data: profileData, isLoading: profileLoading, isError: profileIsErr, error: profileErr } = useGetProfileQuery()
     const { data: bannerData, isError: isBannerErr, error: bannerErr, isLoading: bannerLoading } = useGetBannerQuery()
     const { data: servicesData, isError: isServErr, error: servErr, isLoading: servLoading } = useGetServiceQuery()
+    const dispatch = useDispatch()
 
     const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
     useEffect(() => {
+        const bannerServerError = getServerErrorWithStatus(bannerErr);
+        const profileServerError = getServerErrorWithStatus(profileErr);
+        const balanceServerError = getServerErrorWithStatus(balanceErr);
+        const servServerError = getServerErrorWithStatus(servErr);
+        if (profileServerError?.status === 108 || balanceServerError?.status === 108) {
+            setToast({ message: profileServerError?.message || balanceServerError?.message || "Sesi habis.", type: "error" });
+            setTimeout(() => {
+                dispatch(authAction.logout())
+            }, 2000);
+            return;
+        }
+
         if (isBannerErr) {
             setToast({
-                message: (bannerErr as any)?.data?.message || "Gagal memuat Banner.",
+                message: bannerServerError?.message || "Gagal memuat Banner.",
                 type: "error",
             });
-        }
-        if (profileIsErr) {
+        } else if (profileIsErr) {
             setToast({
-                message: (profileErr as any)?.data?.message || "Gagal memuat data profil pengguna.",
+                message: profileServerError?.message || "Gagal memuat data profil pengguna.",
                 type: "error",
             });
-        }
-        if (balanceIsErr) {
+        } else if (balanceIsErr) {
             setToast({
-                message: (balanceErr as any)?.data?.message || "Gagal memuat saldo akun Anda.",
+                message: balanceServerError?.message || "Gagal memuat saldo akun Anda.",
                 type: "error",
             });
-        }
-        if (isServErr) {
+        } else if (isServErr) {
             setToast({
-                message: (servErr as any)?.data?.message || "Gagal memuat services.",
+                message: servServerError?.message || "Gagal memuat services.",
                 type: "error",
             });
         }
-    }, [isServErr, isBannerErr, profileIsErr, balanceIsErr]);
+    }, [isServErr, isBannerErr, profileIsErr, balanceIsErr, bannerErr, profileErr, balanceErr, servErr, dispatch]);
+
     return (
         <>
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
