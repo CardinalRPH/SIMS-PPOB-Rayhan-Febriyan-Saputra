@@ -15,7 +15,7 @@ import getServerErrorWithStatus from "../utils/errorCast";
 
 const TransactionPage = () => {
     const [transactions, setTransactions] = useState<RecordType[]>([]);
-    const LIMIT = 4;
+    const LIMIT = 5;
     const [offset, setOffset] = useState<number>(0);
     const [hasMore, setHasMore] = useState<boolean>(true);
     const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
