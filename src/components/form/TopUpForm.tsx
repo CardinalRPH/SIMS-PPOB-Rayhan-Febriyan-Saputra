@@ -1,6 +1,6 @@
 import { BsCreditCard } from "react-icons/bs"
 import TextField from "./fields/TextField";
-import { useForm, type UseFormReset, type UseFormWatch } from "react-hook-form";
+import { useForm, type UseFormReset } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { topUpchema, type topUpSchemaType } from "./validations/transactionSchema";
 import formatCurrency from "../../utils/formaCurrency";
