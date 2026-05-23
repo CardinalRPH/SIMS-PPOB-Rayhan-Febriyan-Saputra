@@ -70,10 +70,11 @@ const AccountForm = ({ disabled, onSubmit, isEditing, profileResponse, setEditMo
             <div className="pt-4 space-y-4">
                 {isEditing ? (
                     <>
-                        <RedButton type="submit" disabled={disabled}>
+                        <RedButton type="submit" key="btn-save" disabled={disabled}>
                             {disabled ? "Menyimpan..." : "Simpan Perubahan"}
                         </RedButton>
                         <button
+                            key="btn-cancel"
                             type="button"
                             onClick={() => {
                                 setEditMode(false);
@@ -91,17 +92,19 @@ const AccountForm = ({ disabled, onSubmit, isEditing, profileResponse, setEditMo
                     </>
                 ) : (
                     <>
+                        <RedButton key="btn-edit" type="button" onClick={() => setEditMode(true)}>
+                            Edit Profile
+                        </RedButton>
                         <button
+                            key="btn-logout"
                             type="button"
-                            onClick={() => setEditMode(true)}
+                            onClick={handleLogout}
                             className="w-full py-3 border border-[#f02c1c] text-[#f02c1c] rounded-md text-sm font-semibold hover:bg-red-50/30 transition-all cursor-pointer text-center"
                         >
-                            Edit Profile
+                            Logout
                         </button>
 
-                        <RedButton type="button" onClick={handleLogout}>
-                            Logout
-                        </RedButton>
+
                     </>
                 )}
             </div>
