@@ -5,7 +5,6 @@ import type { RootState } from "../stores";
 import type {
   BalanceResponseType,
   ctResponse,
-  RecordType,
   TransactionResponseType,
 } from "../dto/transaction.dto";
 import type {
