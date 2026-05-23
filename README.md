@@ -12,7 +12,7 @@ Repository ini memuat hasil pengerjaan Take Home Test Web Programmer dari **PT N
 
 Untuk membangun aplikasi ini, saya menggunakan kombinasi teknologi berikut demi menjaga performa, kemudahan skalabilitas kode, serta validasi data yang ketat:
 
-* **Framework Utama:** React (v18) dengan TypeScript agar kode lebih terstruktur dan meminimalkan error tipe data.
+* **Framework Utama:** React Vite (v18) dengan TypeScript agar kode lebih terstruktur dan meminimalkan error tipe data.
 * **Build Tool:** Vite (untuk proses *bundling* yang cepat dibanding CRA).
 * **Styling & UI:** 
   * **Tailwind CSS** untuk menyusun layout responsif tanpa perlu menulis CSS terpisah.
