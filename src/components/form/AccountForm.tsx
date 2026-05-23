@@ -91,21 +91,17 @@ const AccountForm = ({ disabled, onSubmit, isEditing, profileResponse, setEditMo
                     </>
                 ) : (
                     <>
-                        <RedButton
-                            type="button"
-                            onClick={() => setEditMode(true)}
-                        >
-                            Edit Profile
-                        </RedButton>
                         <button
                             type="button"
-                            onClick={handleLogout}
+                            onClick={() => setEditMode(true)}
                             className="w-full py-3 border border-[#f02c1c] text-[#f02c1c] rounded-md text-sm font-semibold hover:bg-red-50/30 transition-all cursor-pointer text-center"
                         >
-                            Logout
+                            Edit Profile
                         </button>
 
-
+                        <RedButton type="button" onClick={handleLogout}>
+                            Logout
+                        </RedButton>
                     </>
                 )}
             </div>
