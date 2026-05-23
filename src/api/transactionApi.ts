@@ -4,6 +4,7 @@ import type { ApiResponseData } from "../types/apiResponseData";
 import type { RootState } from "../stores";
 import type {
   BalanceResponseType,
+  ctResponse,
   RecordType,
   TransactionResponseType,
 } from "../dto/transaction.dto";
@@ -55,7 +56,7 @@ export const transactionApi = createApi({
     }),
 
     postCTransaction: build.mutation<
-      ApiResponseData<RecordType>,
+      ApiResponseData<ctResponse>,
       transactionSchemaType
     >({
       query: (transactionValue) => ({

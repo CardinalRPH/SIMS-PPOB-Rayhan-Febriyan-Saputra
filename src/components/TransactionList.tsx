@@ -32,7 +32,7 @@ const TransactionList = ({ data }: { data: RecordType }) => {
             </div>
 
             <div className="text-xs text-gray-700 font-medium">
-                {data.service_name}
+                {data.description}
             </div>
         </div>
     )
