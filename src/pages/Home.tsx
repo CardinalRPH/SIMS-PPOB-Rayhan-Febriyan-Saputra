@@ -60,6 +60,10 @@ const HomePage = () => {
         }
     }, [isServErr, isBannerErr, profileIsErr, balanceIsErr, bannerErr, profileErr, balanceErr, servErr, dispatch]);
 
+    useEffect(() => {
+        document.title = "SIMS PPOB-Rayhan Febriyan Saputra";
+    }, []);
+
     return (
         <>
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
