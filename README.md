@@ -50,7 +50,7 @@ Pastikan komputer Anda sudah terpasang Node.js (versi 18 ke atas).
 
 ### 1. Clone Project dan setup project
 ```bash
-git clone <url-repository-anda>
+git clone https://github.com/CardinalRPH/SIMS-PPOB-Rayhan-Febriyan-Saputra.git
 cd <nama-folder-project>
 npm install
 ```
