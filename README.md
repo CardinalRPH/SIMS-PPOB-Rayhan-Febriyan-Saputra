@@ -1,4 +1,4 @@
-# Take Home Test - Web Programming (SIMS PPOB)
+# Take Home Test - Web Programming React JS
 
 Repository ini memuat hasil pengerjaan Take Home Test Web Programmer dari **PT Nutech Integrasi**. Aplikasi web untuk manajemen saldo dan transaksi pembayaran ini telah diselesaikan sesuai dengan ketentuan dan dokumentasi teknis yang diberikan.
 
